@@ -1,0 +1,11 @@
+#!/bin/bash
+B_SRC=$BASH_SOURCE
+test -L "$B_SRC" && B_SRC=$(readlink -f $B_SRC)
+__dir="$(cd "$( dirname "${B_SRC}")" >/dev/null 2>&1 && pwd)"
+__file=$(basename $B_SRC)
+
+__rootDir="${__dir}/.."
+
+set -ue
+
+rm -rf "${__rootDir}/bootstrap"

@@ -1,0 +1,19 @@
+#!/bin/bash
+B_SRC=$BASH_SOURCE
+test -L "$B_SRC" && B_SRC=$(readlink -f $B_SRC)
+__dir="$(cd "$( dirname "${B_SRC}")" >/dev/null 2>&1 && pwd)"
+__file=$(basename $B_SRC)
+
+__rootDir="${__dir}/.."
+
+set -ue
+
+if [ -d "__${__rootDir}/bootstrap" ]; then
+    echo "boostrap already existing. Break operation."
+    exit 1
+fi
+
+git -C ${__rootDir} clone https://github.com/twbs/bootstrap.git
+git -C "${__rootDir}/bootstrap" checkout v5.0.2
+
+npm install --prefix "${__rootDir}/bootstrap"

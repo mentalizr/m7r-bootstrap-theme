@@ -1,0 +1,34 @@
+#!/bin/bash
+B_SRC=$BASH_SOURCE
+test -L "$B_SRC" && B_SRC=$(readlink -f $B_SRC)
+__dir="$(cd "$( dirname "${B_SRC}")" >/dev/null 2>&1 && pwd)"
+__file=$(basename $B_SRC)
+
+__rootDir="${__dir}/.."
+
+set -ue
+
+if [ ! -d "${__rootDir}/bootstrap" ]; then
+    echo "boostrap not found. Break operation."
+    exit 1
+fi
+
+if [ ! -f "${__rootDir}/package-lock.json" ]; then
+    echo "boostrap not installed. Break operation."
+    exit 1
+fi
+
+__npmBin="${__rootDir}/bootstrap/node_modules/.bin"
+__scssDir="${__rootDir}/scss"
+__distDir="${__rootDir}/dist"
+
+echo "clean artifacts"
+rm -f ${__rootDir}/bootstrap/scss/m7r-bootstrap.scss*
+rm -f ${__rootDir}/bootstrap/dist/css/m7r-bootstrap.*
+rm -rf ${__distDir}
+
+echo "compile"
+mkdir ${__distDir}
+cp ${__rootDir}/scss/m7r-bootstrap.scss ${__rootDir}/bootstrap/scss/
+npm run --prefix ${__rootDir}/bootstrap dist
+cp ${__rootDir}/bootstrap/dist/css/m7r-bootstrap.* ${__rootDir}/dist/
