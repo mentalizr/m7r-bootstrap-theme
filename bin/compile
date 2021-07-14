@@ -5,30 +5,31 @@ __dir="$(cd "$( dirname "${B_SRC}")" >/dev/null 2>&1 && pwd)"
 __file=$(basename $B_SRC)
 
 __rootDir="${__dir}/.."
+__bootstrapDir="${__rootDir}/bootstrap"
 
 set -ue
 
-if [ ! -d "${__rootDir}/bootstrap" ]; then
+if [ ! -d "${__bootstrapDir}" ]; then
     echo "boostrap not found. Break operation."
     exit 1
 fi
 
-if [ ! -f "${__rootDir}/package-lock.json" ]; then
+if [ ! -f "${__bootstrapDir}/package-lock.json" ]; then
     echo "boostrap not installed. Break operation."
     exit 1
 fi
 
-__npmBin="${__rootDir}/bootstrap/node_modules/.bin"
+__npmBin="${__bootstrapDir}/node_modules/.bin"
 __scssDir="${__rootDir}/scss"
 __distDir="${__rootDir}/dist"
 
 echo "clean artifacts"
-rm -f ${__rootDir}/bootstrap/scss/m7r-bootstrap.scss*
-rm -f ${__rootDir}/bootstrap/dist/css/m7r-bootstrap.*
+rm -f ${__bootstrapDir}/scss/m7r-bootstrap.scss*
+rm -f ${__bootstrapDir}/dist/css/m7r-bootstrap.*
 rm -rf ${__distDir}
 
 echo "compile"
 mkdir ${__distDir}
 cp ${__rootDir}/scss/m7r-bootstrap.scss ${__rootDir}/bootstrap/scss/
 npm run --prefix ${__rootDir}/bootstrap dist
-cp ${__rootDir}/bootstrap/dist/css/m7r-bootstrap.* ${__rootDir}/dist/
+cp ${__bootstrapDir}/dist/css/m7r-bootstrap.* ${__rootDir}/dist/
